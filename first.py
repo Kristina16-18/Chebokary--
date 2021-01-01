@@ -5,11 +5,10 @@ import pickle
 
 WINDOW_SIZE = WINDOW_WIDTH, WINDOW_HEIGHT = 600, 600
 TIMER_EVENT_TYPE = 30
-DATA_DIR = "date"
+DATA_DIR = "data"
 
 
 class ClickMe:
-
     def __init__(self):
         self.width = 200
         self.height = 60
@@ -23,12 +22,11 @@ class ClickMe:
     def render(self, screen):
         font = pygame.font.Font(None, 50)
         text = font.render("Click me!", 1, (50, 70, 0))
-        pygame.drow.rect(screen, (200, 150, 50), (self.x, self.y, self.width, self.height), 0)
-        screen.blit(text, (text.x + (self.width - text.get_width()) // 2,
+        pygame.draw.rect(screen, (200, 150, 50), (self.x, self.y, self.width, self.height), 0)
+        screen.blit(text, (self.x + (self.width - text.get_width()) // 2,
                            self.y + (self.height - text.get_height()) // 2))
-
         font = pygame.font.Font(None, 24)
-        text = font.render(f"Попаданий: {self.score}", 1, (280, 200, 200))
+        text = font.render("Попаданий: {}".format(self.score), 1, (200, 200, 200))
         screen.blit(text, (20, 20))
 
     def move(self):
@@ -47,7 +45,7 @@ class ClickMe:
         pygame.time.set_timer(TIMER_EVENT_TYPE, self.delay if not self.is_paused else 0)  # работа таймера
 
 
-def main():
+if __name__ == '__main__':
     pygame.init()
     screen = pygame.display.set_mode(WINDOW_SIZE)
 
@@ -62,20 +60,16 @@ def main():
                 clickme.move()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 clickme.check_click(event.pos)
-            if event.type == pygame.KEYDAOWN: # пауза
+            if event.type == pygame.KEYDOWN: # пауза
                 if event.key == pygame.K_p:
                     clickme.switch_pause()
                 if event.key == pygame.K_s: # сохранение игры
-                    with open(f"{DATA_DIR}/save.dat", "wb") as file:
+                    with open("{}/save.dat".format(DATA_DIR), "wb") as file:
                         pickle.dump(clickme, file)
                 if event.key == pygame.K_l:
-                    with open(f"{DATA_DIR}/save.dat", "rb") as file:
+                    with open("{}/save.dat".format(DATA_DIR), "rb") as file:
                         clickme = pickle.load(file)
         screen.fill((0, 0, 0))
         clickme.render(screen)
         pygame.display.flip()
     pygame.quit()
-
-
-if __name__ == '__main__':
-    main()
