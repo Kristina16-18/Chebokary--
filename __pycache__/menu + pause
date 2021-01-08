@@ -1,0 +1,166 @@
+import pygame
+pygame.init()
+gray=(119,118,110)
+black=(0,0,0)
+red=(255,0,0)
+green=(0,200,0)
+blue=(0,0,200)
+bright_red=(255,0,0)
+bright_green=(0,255,0)
+bright_blue=(0,0,255)
+display_width=800
+display_height=600
+
+gamedisplays=pygame.display.set_mode((display_width,display_height))
+pygame.display.set_caption("car game")
+clock=pygame.time.Clock()
+
+intro_background=pygame.image.load("background.jpg")
+instruction_background=pygame.image.load("sfs.jpeg")
+car_width=56
+pause=False
+
+def intro_loop():
+    intro=True
+    while intro:
+        for event in pygame.event.get():
+            if event.type==pygame.QUIT:
+                pygame.quit()
+                quit()
+                #sys.exit()
+        gamedisplays.blit(intro_background,(0,0))
+        largetext=pygame.font.Font('freesansbold.ttf',115)
+        TextSurf,TextRect=text_objects("CAR GAME",largetext)
+        TextRect.center=(400,100)
+        gamedisplays.blit(TextSurf,TextRect)
+        button("START",150,520,100,50,green,bright_green,"play")
+        button("QUIT",550,520,100,50,red,bright_red,"quit")
+        button("INSTRUCTION",300,520,200,50,blue,bright_blue,"intro")
+        pygame.display.update()
+        clock.tick(50)
+
+
+def button(msg,x,y,w,h,ic,ac,action=None):
+    mouse=pygame.mouse.get_pos()
+    click=pygame.mouse.get_pressed()
+    if x+w>mouse[0]>x and y+h>mouse[1]>y:
+        pygame.draw.rect(gamedisplays,ac,(x,y,w,h))
+        if click[0]==1 and action!=None:
+            # if action=="play":
+            #     countdown()
+            if action=="quit":
+                pygame.quit()
+                quit()
+                #sys.exit()
+            elif action=="intro":
+                introduction()
+            elif action=="menu":
+                intro_loop()
+            elif action=="pause":
+                paused()
+            elif action=="unpause":
+                unpaused()
+
+
+    else:
+        pygame.draw.rect(gamedisplays,ic,(x,y,w,h))
+    smalltext=pygame.font.Font("freesansbold.ttf",20)
+    textsurf,textrect=text_objects(msg,smalltext)
+    textrect.center=((x+(w/2)),(y+(h/2)))
+    gamedisplays.blit(textsurf,textrect)
+
+
+def introduction():
+    introduction=True
+    while introduction:
+        for event in pygame.event.get():
+            if event.type==pygame.QUIT:
+                pygame.quit()
+                quit()
+                #sys.exit()
+        gamedisplays.blit(instruction_background,(0,0))
+        largetext=pygame.font.Font('freesansbold.ttf',80)
+        smalltext=pygame.font.Font('freesansbold.ttf',20)
+        mediumtext=pygame.font.Font('freesansbold.ttf',40)
+        textSurf,textRect=text_objects("Нужно написать немного про игру!!!!!",smalltext)
+        textRect.center=((350),(200))
+        TextSurf,TextRect=text_objects("INSTRUCTION",largetext)
+        TextRect.center=((400),(100))
+        gamedisplays.blit(TextSurf,TextRect)
+        gamedisplays.blit(textSurf,textRect)
+        stextSurf,stextRect=text_objects("Enter: Прыжок",smalltext)
+        stextRect.center=((150),(400))
+        ptextSurf,ptextRect=text_objects("P : PAUSE  ",smalltext)
+        ptextRect.center=((150),(350))
+        gamedisplays.blit(stextSurf,stextRect)
+        gamedisplays.blit(ptextSurf,ptextRect)
+        button("BACK",600,450,100,50,blue,bright_blue,"menu")
+        pygame.display.update()
+        clock.tick(30)
+
+def paused():
+    global pause
+
+    while pause:
+            for event in pygame.event.get():
+                if event.type==pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                    # sys.exit()
+            gamedisplays.blit(instruction_background,(0,0))
+            largetext=pygame.font.Font('freesansbold.ttf',115)
+            TextSurf,TextRect=text_objects("PAUSED",largetext)
+            TextRect.center=((display_width/2),(display_height/2))
+            gamedisplays.blit(TextSurf,TextRect)
+            button("CONTINUE",150,450,150,50,green,bright_green,"unpause")
+            button("RESTART",350,450,150,50,blue,bright_blue,"play")
+            button("MAIN MENU",550,450,200,50,red,bright_red,"menu")
+            pygame.display.update()
+            clock.tick(30)
+
+def unpaused():
+    global pause
+    pause=False
+
+
+def countdown_background():
+    button("PAUSE",650,0,150,50,blue,bright_blue,"pause")
+
+
+def text_objects(text,font):
+    textsurface=font.render(text,True,black)
+    return textsurface,textsurface.get_rect()
+
+def message_display(text):
+    largetext=pygame.font.Font("freesansbold.ttf",80)
+    textsurf,textrect=text_objects(text,largetext)
+    textrect.center=((display_width/2),(display_height/2))
+    gamedisplays.blit(textsurf,textrect)
+    pygame.display.update()
+    # time.sleep(3)
+    game_loop()
+
+
+def crash():
+    message_display("YOU CRASHED")
+
+
+def game_loop():
+    global pause
+
+    bumped=False
+    while not bumped:
+        for event in pygame.event.get():
+            if event.type==pygame.QUIT:
+                pygame.quit()
+                quit()
+
+        pause=True
+        gamedisplays.fill(gray)
+        button("Pause",650,0,150,50,blue,bright_blue,"pause")
+        pygame.display.update()
+        clock.tick(60)
+intro_loop()
+game_loop()
+pygame.quit()
+quit()
