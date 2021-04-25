@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% include 'navbar.html' %}
+<div class="container mt-4">
+    {% include '_messages.html' %}
+    <div class="row">
+        <div class="col-md-12">
+        <table class="table table-sm">
+            <thead>
+                <th>№</th>
+                <th>Обложка</th>
+                <th>Название</th>
+                <th>Автор</th>
+                <th>Удалить</th>
+            </thead>
+            <tbody>
+                {% for key, product in session['FavoriteBooks'].items() %}
+                <tr>
+                    <td>{{loop.index}}</td>
+                    <td><img src="{{url_for('static',filename='images/'+ product.image)}}" alt="{{product.name}}" width="50" height="45"></td>
+                    <td>{{product.name}}</td>
+                    <td>{{product.author}}</td>
+                    <td> <a href="{{url_for('deleteitem', id=key)}}" class="btn btn-sm btn-danger">Удалить</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+  </div>
+</div>
+{% endblock content %}
